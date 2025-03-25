@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:16.4
+    restart: always
+    container_name: rest-api-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - fullstack
+    volumes:
+      - database_postgres:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: rest-api
+    restart: always
+    environment:
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: postgres  # Changed from DB_DB to more conventional DB_NAME
+      DB_HOST: db
+      DB_PORT: 5432
+      SSL_MODE: disable
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - fullstack
+
+volumes:
+  database_postgres:
+
+networks:
+  fullstack:
+    driver: bridge

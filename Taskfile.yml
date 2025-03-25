@@ -1,0 +1,47 @@
+version: '3'
+
+dotenv: ['.env', '{{.ENV}}/.env', '{{.HOME}}/.env']
+
+tasks:
+  build:
+    cmds:
+      - go build -o bin/app cmd/server/main.go
+  test:
+    cmds:
+     - go test -v ./...
+  lint:
+    cmds:
+      - golangci-lint run
+  run:
+    cmds:
+      - docker compose up --build
+  new/migrations:
+    cmds:
+    - migrate create -ext=sql -dir=./migrations -seq {{.name}}
+  db/migrations/up:
+    cmds:
+    - migrate -database {{.DSN}} -path ./migrations up
+  db/migrations/down: 
+    cmds:
+    - migrate -database {{.DSN}} -path ./migrations down
+  db/migrations/force:
+    cmds:
+      - echo "Forcing migration version {{.version}}"
+      - migrate -database={{.DSN}} -path=./migrations force {{.version}}
+  integration-test:
+    cmds:
+    - docker compose up -d db
+    - go test -tags=integration -count=1 -v ./...
+    env:
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_TABLE: postgres
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_DB: postgres
+      SSL_MODE: disable
+  e2e:
+    cmds:
+      - docker compose up -d --build
+      - go test -tags=e2e -count=1 -v ./...
+
