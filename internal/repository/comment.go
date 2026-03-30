@@ -96,11 +96,7 @@ func (d *CommentStore) UpdateComment(ctx context.Context, cmt comment.Comment) (
 
 // DeleteComment - deletes a comment from the database
 func (d *CommentStore) DeleteComment(ctx context.Context, id string) error {
-	_, err := d.db.ExecContext(
-		ctx,
-		`DELETE FROM comments where id = $1`,
-		id,
-	)
+	_, err := d.db.ExecContext(ctx, `DELETE FROM comments where id = $1`, id)
 	if err != nil {
 		return fmt.Errorf("failed to delete comment from the database: %w", err)
 	}

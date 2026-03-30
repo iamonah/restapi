@@ -41,7 +41,7 @@ func (h *Handler) PostComment(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 		http.Error(w, "not a valid comment", http.StatusBadRequest)
 	}
-	
+
 	var cmt = comment.Comment{
 		Slug:   pcomment.Slug,
 		Author: pcomment.Author,

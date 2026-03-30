@@ -1,3 +1,6 @@
 {
-    "gopls.buildFlags": ["-tags=integration,e2e"]
+    "go.toolsManagement.autoUpdate": true,
+    "gopls": {
+        "buildFlags": ["-tags=integration,e2e"]
+    }
 }
